@@ -1,0 +1,21 @@
+{
+  "name": "example-expressjs-aftership-webhook",
+  "version": "1.0.0",
+  "description": "Example of webhook that catch Aftership POST request.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "aftership",
+    "webhook",
+    "expressjs"
+  ],
+  "author": "Andi N. Dirgantara",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.10.1",
+    "express": "^4.10.7"
+  }
+}
