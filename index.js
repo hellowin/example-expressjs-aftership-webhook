@@ -20,7 +20,7 @@ fs.readFile('client_secret.json', function processClientSecrets(err, content) {
   }
   // Authorize a client with the loaded credentials, then call the
   // Reports API.
-  authorize(JSON.parse(content), watchLoginEvents);
+  authorize(JSON.parse(content), listLoginEvents);
 });
 
 /**
@@ -171,10 +171,6 @@ function watchLoginEvents(auth) {
 
 
 
-
-
-
-
 var express = require('express'),
     bodyParser = require('body-parser'),
     app = express(),
@@ -182,18 +178,17 @@ var express = require('express'),
 
 app.use(bodyParser.json());
 
-app.post('/', function (req, res) {
-    var body = req.body;
-    var trackingNumber = body.msg.tracking_number;
-    var slug = body.msg.slug;
-    var token = body.msg.unique_token;
-
-    console.log(trackingNumber, slug, token);
-
-    res.json({
-        message: 'ok got it!'
-    });
+app.post('/', function(request, response){
+  console.log(request.body);      // your JSON
+  //response.send(request.body);    // echo the result back
+  response.status(200).json({
+        message: 'Thanks for the info'
+  });
 });
+
+app.get('/', function (req, res) {
+  res.send('Hello World!')
+})
 
 var server = app.listen(port, function () {
 
@@ -203,3 +198,4 @@ var server = app.listen(port, function () {
     console.log('Example app listening at http://%s:%s', host, port)
 
 });
+
