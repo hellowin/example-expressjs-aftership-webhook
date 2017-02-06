@@ -171,31 +171,72 @@ function watchLoginEvents(auth) {
 
 
 
+//Receive data from JSON POST and insert into MongoDB
+
+
+
+
+
+app.use(bodyParser.json())
+
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, '/myfile.html'));
+});
+
+
+
 var express = require('express'),
     bodyParser = require('body-parser'),
     app = express(),
-    port = 3000;
+    port = 8080;
+var MongoClient = require('mongodb').MongoClient
+var db;
+
+//Establish Connection
+MongoClient.connect('mongodb://localhost:27017/mydb', function (err, database) {
+   if (err) 
+   	throw err
+   else
+   {
+	db = database;
+	console.log('Connected to MongoDB');
+	//Start app only after connection is ready
+	app.listen(port);
+   }
+ });
+
 
 app.use(bodyParser.json());
+// app.post('/', function(request, response){
+//   console.log(request.body);      // your JSON
+//   request.headers;
+//   //response.send(request.body);    // echo the result back
+//   response.status(200).json({
+//         message: 'Thanks for the info'
+//   });
+// });
 
-app.post('/', function(request, response){
-  console.log(request.body);      // your JSON
-  //response.send(request.body);    // echo the result back
-  response.status(200).json({
-        message: 'Thanks for the info'
+app.post('/', function(req, res) {
+   // Insert JSON straight into MongoDB
+  db.collection('googleLogins').insert(req.body, function (err, result) {
+      if (err)
+         res.status(500).json('error: ${err}');
+      else
+        res.status(200).json('Success: true');
+
   });
 });
 
 app.get('/', function (req, res) {
-  res.send('Hello World!')
+  res.send('Post only please.')
 })
 
-var server = app.listen(port, function () {
+// var server = app.listen(port, function () {
 
-    var host = server.address().address
-    var port = server.address().port
+//     var host = server.address().address
+//     var port = server.address().port
 
-    console.log('Example app listening at http://%s:%s', host, port)
+//     console.log('Example app listening at http://%s:%s', host, port)
 
-});
+// });
 
