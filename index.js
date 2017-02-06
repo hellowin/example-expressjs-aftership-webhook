@@ -209,12 +209,18 @@ app.use(bodyParser.json())
 // });
 
 app.post('/', function(req, res) {
-   // Insert JSON straight into MongoDB
+  JSON.stringify(req.body)
+  // Insert JSON straight into MongoDB
   db.collection('googleLogins').insert(req.body, function (err, result) {
-      if (err)
-         res.status(500).json('error: ${err}');
-      else
+      if (err){
+        res.status(500).json('error: ${err}');
+        console.log(Date.now() + ` Failed to insert into mongodb Error: ${err}`)
+      }
+      else{
         res.status(200).json('Success: true');
+        console.log(Date.now() + `inserted into mongodb: Result: ${result}`)
+      }
+        
 
   });
 });
