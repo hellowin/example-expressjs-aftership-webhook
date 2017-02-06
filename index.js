@@ -20,7 +20,7 @@ fs.readFile('client_secret.json', function processClientSecrets(err, content) {
   }
   // Authorize a client with the loaded credentials, then call the
   // Reports API.
-  authorize(JSON.parse(content), listLoginEvents);
+  authorize(JSON.parse(content), watchLoginEvents);
 });
 
 /**
@@ -173,24 +173,16 @@ function watchLoginEvents(auth) {
 
 //Receive data from JSON POST and insert into MongoDB
 
-
-
-
-
-app.use(bodyParser.json())
-
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, '/myfile.html'));
-});
-
-
-
 var express = require('express'),
     bodyParser = require('body-parser'),
     app = express(),
     port = 8080;
+
+
+
 var MongoClient = require('mongodb').MongoClient
 var db;
+
 
 //Establish Connection
 MongoClient.connect('mongodb://localhost:27017/mydb', function (err, database) {
@@ -205,8 +197,8 @@ MongoClient.connect('mongodb://localhost:27017/mydb', function (err, database) {
    }
  });
 
+app.use(bodyParser.json())
 
-app.use(bodyParser.json());
 // app.post('/', function(request, response){
 //   console.log(request.body);      // your JSON
 //   request.headers;
@@ -239,4 +231,3 @@ app.get('/', function (req, res) {
 //     console.log('Example app listening at http://%s:%s', host, port)
 
 // });
-
