@@ -12,6 +12,25 @@ var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'admin-reports_v1-nodejs-quickstart.json';
 
+
+var TTL_FOR_WEB_HOOK = '3600';//'21600';
+
+// Generate a v4 UUID (random) 
+var uuid = require('node-uuid');
+var CURRENT_UUID = uuid.v4();
+
+// var repeat = require('repeat');
+// var Repeat = repeat;
+
+setInterval(callGoogleLoginWatcher, TTL_FOR_WEB_HOOK * 1000);
+// Repeat(callGoogleLoginWatcher()).every(CURRENT_UUID, 'sec');
+
+
+
+function callGoogleLoginWatcher() {
+
+
+
 // Load client secrets from a local file.
 fs.readFile('client_secret.json', function processClientSecrets(err, content) {
   if (err) {
@@ -22,6 +41,9 @@ fs.readFile('client_secret.json', function processClientSecrets(err, content) {
   // Reports API.
   authorize(JSON.parse(content), watchLoginEvents);
 });
+
+}
+
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -135,8 +157,8 @@ function listLoginEvents(auth) {
 function watchLoginEvents(auth) {
   var service = google.admin('reports_v1');
   //var uuid = require('node-uuid');
-  // Generate a v4 UUID (random) 
-  var uuid = require('node-uuid');
+  var CURRENT_UUID = uuid.v4();
+  console.log(Date.now() + ` Calling web_hook. uuid: ${CURRENT_UUID}`)
 
   var data = {
       auth: auth,
@@ -145,30 +167,29 @@ function watchLoginEvents(auth) {
       applicationName:'login',
       orderBy: 'startTime',
       resource: {
-          id: uuid.v4(),
+          id: CURRENT_UUID,
           //token: 'email='+_token.provider_email,
           address: 'https://nsut-dev-nodejs01.nsuok.edu/',
           type: 'web_hook',
           params: {
-              ttl: '21600'
+              ttl: TTL_FOR_WEB_HOOK
           }
       }
   };
   service.activities.watch(data, function(err, response) {
       if (err) {
           //logging.info(`watch api error  ${err}`);
-          console.error('The API returned an error: ' + err);
+          console.error('The API returned an error: ' + JSON.stringify(err));
           //console.log(JSON.stringify(response));
           return;
        }
        //apiCount += 1;
        //jsonOutput = JSON.stringify(response);
        //logging.info(`JSON response  ${response}`);
-       console.log(JSON.stringify(response));
+       console.log(Date.now() + ` now watching for logins: ${JSON.stringify(response)}`);
    }); 
 }
 // end watch logins
-
 
 
 //Receive data from JSON POST and insert into MongoDB
@@ -213,12 +234,12 @@ app.post('/', function(req, res) {
   // Insert JSON straight into MongoDB
   db.collection('googleLogins').insert(req.body, function (err, result) {
       if (err){
-        res.status(500).json('error: ${err}');
-        console.log(Date.now() + ` Failed to insert into mongodb Error: ${err}`)
+        res.status(500).json(`error: ${JSON.stringify(err)}`);
+        console.log(Date.now() + ` Failed to insert into mongodb Error: ${JSON.stringify(err)}`)
       }
       else{
         res.status(200).json('Success: true');
-        console.log(Date.now() + `inserted into mongodb: Result: ${result}`)
+        console.log(Date.now() + ` inserted into mongodb: Result: ${JSON.stringify(result)}`)
       }
         
 
