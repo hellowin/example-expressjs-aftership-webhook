@@ -22,15 +22,14 @@ var CURRENT_UUID = uuid.v4();
 // var repeat = require('repeat');
 // var Repeat = repeat;
 
-setInterval(callGoogleLoginWatcher, TTL_FOR_WEB_HOOK * 1000);
-// Repeat(callGoogleLoginWatcher()).every(CURRENT_UUID, 'sec');
 
-
+//calls function at set interval in seconds
+function startInterval(callback, seconds) {
+  callback();
+  return setInterval(callback, seconds * 1000);
+}
 
 function callGoogleLoginWatcher() {
-
-
-
 // Load client secrets from a local file.
 fs.readFile('client_secret.json', function processClientSecrets(err, content) {
   if (err) {
@@ -136,16 +135,18 @@ function listLoginEvents(auth) {
       console.log('The API returned an error: ' + err);
       return;
     }
-    var activities = response.items;
-    if (activities.length == 0) {
-      console.log('No logins found.');
-    } else {
-      console.log('Logins:');
-      for (var i = 0; i < activities.length; i++) {
-        var activity = activities[i];
-        console.log(activity.JSON);
-      }
-    }
+
+    console.log(JSON.stringify(response))
+    // var activities = response.items;
+    // if (activities.length == 0) {
+    //   console.log('No logins found.');
+    // } else {
+    //   console.log('Logins:');
+    //   for (var i = 0; i < activities.length; i++) {
+    //     var activity = activities[i];
+    //     console.log(activity.JSON);
+    //   }
+    // }
   });
 }
 
@@ -199,8 +200,6 @@ var express = require('express'),
     app = express(),
     port = 8080;
 
-
-
 var MongoClient = require('mongodb').MongoClient
 var db;
 
@@ -218,16 +217,13 @@ MongoClient.connect('mongodb://localhost:27017/mydb', function (err, database) {
    }
  });
 
-app.use(bodyParser.json())
+//calls google login watcher 100 seconds before TTL ends
+//startInterval(callGoogleLoginWatcher,TTL_FOR_WEB_HOOK - 100)
 
-// app.post('/', function(request, response){
-//   console.log(request.body);      // your JSON
-//   request.headers;
-//   //response.send(request.body);    // echo the result back
-//   response.status(200).json({
-//         message: 'Thanks for the info'
-//   });
-// });
+startInterval(callGoogleLoginWatcher,TTL_FOR_WEB_HOOK - 100)
+
+
+app.use(bodyParser.json())
 
 app.post('/', function(req, res) {
   JSON.stringify(req.body)
@@ -249,12 +245,3 @@ app.post('/', function(req, res) {
 app.get('/', function (req, res) {
   res.send('Post only please.')
 })
-
-// var server = app.listen(port, function () {
-
-//     var host = server.address().address
-//     var port = server.address().port
-
-//     console.log('Example app listening at http://%s:%s', host, port)
-
-// });
