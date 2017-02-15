@@ -223,6 +223,8 @@ MongoClient.connect('mongodb://localhost:27017/mydb', function (err, database) {
 startInterval(callGoogleLoginWatcher,TTL_FOR_WEB_HOOK - 100)
 
 
+app.use(bodyParser.json())
+
 app.post('/', function(req, res) {
   JSON.stringify(req.body)
   // Insert JSON straight into MongoDB
