@@ -38,7 +38,7 @@ fs.readFile('client_secret.json', function processClientSecrets(err, content) {
   }
   // Authorize a client with the loaded credentials, then call the
   // Reports API.
-  authorize(JSON.parse(content), listLoginEvents);
+  authorize(JSON.parse(content), watchLoginEvents);
 });
 
 }
