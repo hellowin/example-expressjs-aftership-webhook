@@ -232,6 +232,7 @@ app.post('/', function (req, res) {
   req.body["inserted_dt"] = date.toISOString();
   console.log(date.toISOString() + + ` Message Headers: ${JSON.stringify(req.headers)}`);
   db.collection('googleLogins', function(err, collection) {
+    console.log(err);
     if (err) {
       console.log(date.toISOString() + ` Failed to find collection: ${JSON.stringify(err)}`)
     }
