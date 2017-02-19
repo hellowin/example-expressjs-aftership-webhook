@@ -230,15 +230,15 @@ app.post('/', function (req, res) {
   // Insert JSON straight into MongoDB
   var date = moment();
   req.body["inserted_dt"] = date.toISOString();
-  console.log(date.toISOString() + req.headers);
-  db.collection('googleLogins', function (err, collection) {
+  console.log(date.toISOString() + + ` Message Headers: ${JSON.stringify(req.headers)}`);
+  db.collection('googleLogins', function(err, collection) {
     if (err) {
       console.log(date.toISOString() + ` Failed to find collection: ${JSON.stringify(err)}`)
     }
     else {
-      collection.findOne(query, function (err, item) {
-        if (item) {
-          console.log(date.toISOString() + ` Item Already exists in mongodb, will not insert duplicate: ${JSON.stringify(err)}`)
+      collection.count({ "id.uniqueQualifier": req.body.id.uniqueQualifier }, function (err, count) {
+        if (count>0) {
+          console.log(date.toISOString() + ` Item Already exists in mongodb, will not insert duplicate: ${JSON.stringify(req.body)}`)
         }
         //insert record
         else {
