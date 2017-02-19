@@ -225,20 +225,36 @@ startInterval(callGoogleLoginWatcher,TTL_FOR_WEB_HOOK - 100)
 
 app.use(bodyParser.json())
 
-app.post('/', function(req, res) {
+app.post('/', function (req, res) {
   JSON.stringify(req.body)
   // Insert JSON straight into MongoDB
   var date = moment();
   req.body["inserted_dt"] = date.toISOString();
-  db.collection('googleLogins').insert(req.body, function (err, result) {
-      if (err){
-        res.status(500).json(`error: ${JSON.stringify(err)}`);
-        console.log(date.toISOString() + ` Failed to insert into mongodb Error: ${JSON.stringify(err)}`)
-      }
-      else{
-        res.status(200).json('Success: true');
-        console.log(date.toISOString() + ` inserted into mongodb: Result: ${JSON.stringify(result)}`)
-      }
+  console.log(date.toISOString() + req.headers);
+  db.collection('googleLogins', function (err, collection) {
+    if (err) {
+      console.log(date.toISOString() + ` Failed to find collection: ${JSON.stringify(err)}`)
+    }
+    else {
+      collection.findOne(query, function (err, item) {
+        if (item) {
+          console.log(date.toISOString() + ` Item Already exists in mongodb, will not insert duplicate: ${JSON.stringify(err)}`)
+        }
+        //insert record
+        else {
+          collection.insert(req.body, function (err, result) {
+            if (err) {
+              res.status(500).json(`error: ${JSON.stringify(err)}`);
+              console.log(date.toISOString() + ` Failed to insert into mongodb Error: ${JSON.stringify(err)}`)
+            }
+            else {
+              res.status(200).json('Success: true');
+              //console.log(date.toISOString() + ` inserted into mongodb: Result: ${JSON.stringify(result)}`)
+            }
+          });
+        }
+      });
+    }
   });
 });
 
