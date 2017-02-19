@@ -38,7 +38,7 @@ fs.readFile('client_secret.json', function processClientSecrets(err, content) {
   }
   // Authorize a client with the loaded credentials, then call the
   // Reports API.
-  authorize(JSON.parse(content), watchLoginEvents);
+  authorize(JSON.parse(content), listLoginEvents);
 });
 
 }
@@ -202,7 +202,7 @@ var express = require('express'),
 
 var MongoClient = require('mongodb').MongoClient
 var db;
-
+var moment = require('moment');
 
 //Establish Connection
 MongoClient.connect('mongodb://localhost:27017/mydb', function (err, database) {
@@ -228,17 +228,17 @@ app.use(bodyParser.json())
 app.post('/', function(req, res) {
   JSON.stringify(req.body)
   // Insert JSON straight into MongoDB
+  var date = moment();
+  req.body["inserted_dt"] = date.toISOString();
   db.collection('googleLogins').insert(req.body, function (err, result) {
       if (err){
         res.status(500).json(`error: ${JSON.stringify(err)}`);
-        console.log(Date.now() + ` Failed to insert into mongodb Error: ${JSON.stringify(err)}`)
+        console.log(date.toISOString() + ` Failed to insert into mongodb Error: ${JSON.stringify(err)}`)
       }
       else{
         res.status(200).json('Success: true');
-        console.log(Date.now() + ` inserted into mongodb: Result: ${JSON.stringify(result)}`)
+        console.log(date.toISOString() + ` inserted into mongodb: Result: ${JSON.stringify(result)}`)
       }
-        
-
   });
 });
 
