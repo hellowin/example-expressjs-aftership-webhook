@@ -230,7 +230,7 @@ app.post('/', function (req, res) {
   // Insert JSON straight into MongoDB
   var date = moment();
   req.body["inserted_dt"] = date.toISOString();
-  console.log(date.toISOString() + + ` Message Headers: ${JSON.stringify(req.headers)}`);
+  console.log(date.toISOString() + ` Message Headers: ${JSON.stringify(req.headers)}`);
   db.collection('googleLogins', function(err, collection) {
       collection.count({ "id.uniqueQualifier": req.body.id.uniqueQualifier }, function (err, count) {
         if (count>0) {
