@@ -238,7 +238,8 @@ app.post('/', function (req, res) {
           console.log(date.toISOString() + ` Item Already exists in mongodb, will not insert duplicate: ${JSON.stringify(req.body)}`)
           res.status(200).json('Success: true');
         }
-        //insert record
+
+        //insert recor
         else {
           collection.insert(req.body, function (err, result) {
             if (err) {
