@@ -231,6 +231,7 @@ app.post('/', function (req, res) {
   var date = moment();
   req.body["inserted_dt"] = date.toISOString();
   console.log(date.toISOString() + ` Message Headers: ${JSON.stringify(req.headers)}`);
+  console.log(date.toISOString() + ` Message Headers: ${JSON.stringify(req.body.id.uniqueQualifier)}`);
   db.collection('googleLogins', function(err, collection) {
       collection.count({ "id.uniqueQualifier": req.body.id.uniqueQualifier }, function (err, count) {
         if (count>0) {
