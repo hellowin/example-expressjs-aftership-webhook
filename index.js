@@ -234,12 +234,12 @@ app.post('/', function (req, res) {
   // Insert JSON straight into MongoDB
   var date = moment();
   req.body["inserted_dt"] = date.toISOString();
-  console.log(date.toISOString() + ` Message Headers: ${JSON.stringify(req.headers)}`);
-  console.log(date.toISOString() + ` Message Headers: ${req.body.ipAddress}`);
+  //console.log(date.toISOString() + ` Message Headers: ${JSON.stringify(req.headers)}`);
+  //console.log(date.toISOString() + ` Message Headers: ${req.body.ipAddress}`);
   db.collection('googleLogins', function(err, collection) {
       collection.count({ "id.uniqueQualifier": req.body.id.uniqueQualifier }, function (err, count) {
         if (count>0) {
-          console.log(date.toISOString() + ` Item Already exists in mongodb, will not insert duplicate: ${JSON.stringify(req.body)}`)
+          //console.log(date.toISOString() + ` Item Already exists in mongodb, will not insert duplicate: ${JSON.stringify(req.body)}`)
           res.status(200).json('Success: true');
         }
 
