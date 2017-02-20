@@ -204,6 +204,7 @@ var MongoClient = require('mongodb').MongoClient
 var db;
 var moment = require('moment');
 var logger = require('morgan');
+var path = require('path')
 
 //Establish Connection
 MongoClient.connect('mongodb://nsut-dev-nodejs01.nsuok.edu:27017/mydb', function (err, database) {
@@ -222,8 +223,10 @@ MongoClient.connect('mongodb://nsut-dev-nodejs01.nsuok.edu:27017/mydb', function
 //startInterval(callGoogleLoginWatcher,TTL_FOR_WEB_HOOK - 100)
 
 startInterval(callGoogleLoginWatcher,TTL_FOR_WEB_HOOK - 100)
+// create a write stream (in append mode) 
+//var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
 
-app.use(logger('dev'));
+app.use(logger('combined'));
 app.use(bodyParser.json())
 
 app.post('/', function (req, res) {
@@ -260,16 +263,3 @@ app.post('/', function (req, res) {
 app.get('/', function (req, res) {
   res.send('Post only please.')
 })
-
-  db.collection('googleLogins').insert(req.body, function (err, result) {
-      if (err){
-        res.status(500).json(`error: ${JSON.stringify(err)}`);
-        console.log(Date.now() + ` Failed to insert into mongodb Error: ${JSON.stringify(err)}`)
-      }
-      else{
-        res.status(200).json('Success: true');
-        console.log(Date.now() + ` inserted into mongodb: Result: ${JSON.stringify(result)}`)
-      }
-        
-
-  });
