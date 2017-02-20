@@ -232,11 +232,6 @@ app.post('/', function (req, res) {
   req.body["inserted_dt"] = date.toISOString();
   console.log(date.toISOString() + + ` Message Headers: ${JSON.stringify(req.headers)}`);
   db.collection('googleLogins', function(err, collection) {
-    console.log(err);
-    if (err) {
-      console.log(date.toISOString() + ` Failed to find collection: ${JSON.stringify(err)}`)
-    }
-    else {
       collection.count({ "id.uniqueQualifier": req.body.id.uniqueQualifier }, function (err, count) {
         if (count>0) {
           console.log(date.toISOString() + ` Item Already exists in mongodb, will not insert duplicate: ${JSON.stringify(req.body)}`)
@@ -255,7 +250,6 @@ app.post('/', function (req, res) {
           });
         }
       });
-    }
   });
 });
 
