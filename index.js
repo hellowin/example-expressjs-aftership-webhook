@@ -205,7 +205,7 @@ var db;
 var moment = require('moment');
 
 //Establish Connection
-MongoClient.connect('mongodb://localhost:27017/mydb', function (err, database) {
+MongoClient.connect('mongodb://nsut-dev-nodejs01.nsuok.edu:27017/mydb', function (err, database) {
    if (err) 
    	throw err
    else
@@ -231,11 +231,12 @@ app.post('/', function (req, res) {
   var date = moment();
   req.body["inserted_dt"] = date.toISOString();
   console.log(date.toISOString() + ` Message Headers: ${JSON.stringify(req.headers)}`);
-  console.log(date.toISOString() + ` Message Headers: ${JSON.stringify(req.body.id.uniqueQualifier)}`);
+  console.log(date.toISOString() + ` Message Headers: ${req.body.ipAddress}`);
   db.collection('googleLogins', function(err, collection) {
       collection.count({ "id.uniqueQualifier": req.body.id.uniqueQualifier }, function (err, count) {
         if (count>0) {
           console.log(date.toISOString() + ` Item Already exists in mongodb, will not insert duplicate: ${JSON.stringify(req.body)}`)
+          res.status(200).json('Success: true');
         }
         //insert record
         else {
