@@ -1,5 +1,5 @@
-# Example of Aftership webhook server using Node.js and Express.js framework
-Example of webhook that catch Aftership POST request.
+# Nodejs code to request webhooks from google Admin reports API
+
 
 ##Installation
 1. Just do `npm install` in this project root to install dependencies, of course make sure you have installed `NodeJS` and `NPM` available first.
